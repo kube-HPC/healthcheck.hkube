@@ -37,10 +37,12 @@ describe('rest', () => {
         });
         it('should work with HealthcheckImpl', async () => {
             const healthChecker = new baseClasses.HealthcheckImpl();
-            healthChecker.setHealthy();
             rest.start('/HealthcheckImpl', () => healthChecker.checkHealth(500), 'true')
-            await delay(1000);
             let res = await chai.request(rest._app).get('/HealthcheckImpl')
+            expect(res).to.have.status(200);
+            healthChecker.setHealthy();
+            await delay(1000);
+            res = await chai.request(rest._app).get('/HealthcheckImpl')
             expect(res).to.have.status(500);
             healthChecker.setHealthy();
             await delay(200);
