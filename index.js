@@ -1,5 +1,5 @@
-const interval = require('./lib/interval.js');
-const events = require('./lib/events.js');
+const interval = require('./lib/interval');
+const events = require('./lib/events');
 const rest = require('./lib/rest');
 const baseClasses = require('./lib/baseClasses');
 
