@@ -3,6 +3,7 @@ const { expect } = chai;
 const chaiAsPromised = require('chai-as-promised');
 let chaiHttp = require('chai-http');
 const { promisify } = require('util');
+const uid = require('@hkube/uid');
 const delay = promisify(setTimeout);
 
 chai.use(chaiAsPromised);
@@ -12,7 +13,6 @@ const { rest, baseClasses } = require('../index')
 
 describe('rest', () => {
     describe('api test', () => {
-
         before(async () => {
             await rest.init({ port: 9999 });
         });
@@ -54,10 +54,24 @@ describe('rest', () => {
         }).timeout(5000);
     });
     describe('init and start tests', () => {
-        it('should create path', async () => {
-            await rest.initAndStart({ path: '/true', port: 9998 }, () => true, 'true')
-            const res = await chai.request(rest._app).get('/true')
+        beforeEach(()=>{
+            rest._app=null;
+        })
+        it('should init and start', async () => {
+            const options = { path: `/${uid.randomString(5)}`, port: 9998, enabled: true };
+            await rest.initAndStart(options, () => true, 'true')
+            expect(rest._app).to.exist;
+            const res = await chai.request(rest._app).get(options.path)
             expect(res).to.have.status(200);
+        });
+        it('should not init when not enabled', async () => {
+            const options = { path: `/${uid.randomString(5)}`, port: 9998, enabled: false };
+            await rest.initAndStart(options, () => true, 'true');
+            expect(rest._app).to.not.exist;
+        });
+        it('should not init with no options', async () => {
+            await rest.initAndStart(null, () => true, 'true')
+            expect(rest._app).to.not.exist;
         });
     });
 });
