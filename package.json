@@ -27,6 +27,6 @@
     "nyc": "^15.1.0"
   },
   "dependencies": {
-    "@hkube/rest-server": "^1.0.17"
+    "@hkube/rest-server": "^1.0.18"
   }
 }
